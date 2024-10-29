@@ -4,9 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxt/ui" , "@vueuse/nuxt" ],
   colorMode: {
-    preference: 'light'
+    preference: 'dark'
   },
   css: [
     '~/assets/css/tabler-icons.min.css'
+  ],
+  plugins: [
+
   ]
 })

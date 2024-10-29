@@ -1,45 +1,105 @@
-<script setup lang="ts">
-// import { useWindowSize } from '@vueuse/core'
-
-// const { width, height } = useWindowSize()
-import { useDisplayMedia } from '@vueuse/core'
-
-const { stream, start , stop } = useDisplayMedia()
-
-// start streaming
-if (process.client) {
-    const video = document.getElementById('video')
-    watchEffect(() => {
-        // preview on a video element
-        video.srcObject = stream.value
-    })
-}
-
-
-</script>
-
 <template>
-    <video muted autoplay controls id="video" class="h-100 w-auto"></video>
-    <button @click="start()">start</button>
-    <button @click="stop()">stop</button>
-    <!-- <UseWindowSize v-slot="{ width, height }"> -->
-    <!-- Width: {{ width }}
-        Height: {{ height }} -->
-    <!-- </UseWindowSize> -->
+    <div>
+        <form @submit.prevent="submitForm">
+            <input v-model="name" placeholder="Name" required />
+            <input v-model="age" type="number" placeholder="Age" required />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </template>
 
-<!-- <script setup>
+<script>
+export default {
+    data() {
+        return {
+            name: '',
+            age: null,
+        };
+    },
+    methods: {
+        async submitForm() {
+
+            try {
+                const { data: data, error, refresh } = await useAsyncData('', () => $fetch('http://localhost:3001/api/insert', {
+                    method: 'POST',
+                    body: {
+                        name: this.name,
+                        age: this.age,
+                    },
+                }))
+                console.log(data);
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+        },
+    },
+};
+</script>
+
+
+
+<!-- <script setup lang="ts">
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 const colorMode = useColorMode()
 
-colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+const state = reactive({
+    toggle: true,
+    name: undefined,
+    email: undefined,
+    password: undefined
+})
 
+const validate = (state: any): FormError[] => {
+    const errors = []
+    if (!state.name) errors.push({ path: 'name', message: 'Required' })
+    if (!state.email) errors.push({ path: 'email', message: 'Required' })
+    if (!state.password) errors.push({ path: 'password', message: 'Required' })
+    return errors
+}
+
+async function onSubmit(event: FormSubmitEvent<any>) {
+    // Do something with data
+    console.log(event.data)
+}
+
+async function onError(event: FormErrorEvent) {
+    const element = document.getElementById(event.errors[0].id)
+    element?.focus()
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
 </script>
 
 <template>
-    <LayouttHeader />
-    <p class="dark:bg-green-500"><i class="ti ti-armchair text-3xl p-2"></i>Hello</p>
-    <UChip text="3" size="2xl">
-        <UButton icon="i-shopping-cart-sign" color="gray" />
-    </UChip>
-    <LayouttFooter />
-</template> -->
+    <div class="w-100">
+        <div class="w-8/12 md:w-6/12 lg:w-3/12 m-auto mt-32 bg-teal-600 rounded-lg p-4 text-neutral-50">
+            <UForm :validate="validate" :state="state" class="space-y-4" @submit="onSubmit" @error="onError">
+                <UFormGroup label="Name & Family" name="name">
+                    <UInput v-model="state.name" />
+                </UFormGroup>
+
+                <UFormGroup label="Email" name="email">
+                    <UInput v-model="state.email" />
+                </UFormGroup>
+
+                <UFormGroup label="Password" name="password">
+                    <UInput v-model="state.password" type="password" />
+                </UFormGroup>
+
+                <UButton type="submit">
+                    Submit
+                </UButton>
+            </UForm>
+            <br>
+            <UFormGroup name="toggle" label="Theme mode">
+                <UToggle @change="
+                    colorMode.preference = colorMode.value === 'light' ? 'dark' : 'light'
+                    " v-model="state.toggle" />
+            </UFormGroup>
+        </div>
+    </div>
+</template>
+<style >
+label{
+    color: white !important;
+}
+</style> -->
