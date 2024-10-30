@@ -9,3 +9,4 @@ colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
     <NuxtPage />
   </div>
 </template>
+
